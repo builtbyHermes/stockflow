@@ -1,8 +1,9 @@
 import express from "express";
 
 import { productsRouter } from "./modules/products/routes.js";
-import { suppliersRouter } from "./modules/suppliers/routes.js";
 import { purchaseOrdersRouter } from "./modules/purchase-orders/routes.js";
+import { stockAdjustmentsRouter } from "./modules/stock-adjustments/routes.js";
+import { suppliersRouter } from "./modules/suppliers/routes.js";
 
 export const app = express();
 
@@ -25,3 +26,4 @@ app.get("/api/health", (_req, res) => {
 app.use("/api/products", productsRouter);
 app.use("/api/suppliers", suppliersRouter);
 app.use("/api/purchase-orders", purchaseOrdersRouter);
+app.use("/api/stock-adjustments", stockAdjustmentsRouter);

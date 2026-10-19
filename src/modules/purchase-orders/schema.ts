@@ -57,3 +57,34 @@ export const updatePurchaseOrderSchema = z
   .refine((data) => Object.keys(data).length > 0, {
     message: "Provide at least one field to update",
   });
+
+
+  const receiveItemSchema = z
+  .object({
+    productId: z.string().uuid(),
+    receivedQuantity: z.number().int().positive(),
+  })
+  .strict();
+
+export const receivePurchaseOrderSchema = z
+  .object({
+    items: z
+      .array(receiveItemSchema)
+      .min(1, "Provide at least one item to receive")
+      .superRefine((items, context) => {
+        const productIds = new Set<string>();
+
+        items.forEach((item, index) => {
+          if (productIds.has(item.productId)) {
+            context.addIssue({
+              code: "custom",
+              path: [index, "productId"],
+              message: "A product can only appear once per receiving request",
+            });
+          }
+
+          productIds.add(item.productId);
+        });
+      }),
+  })
+  .strict();
