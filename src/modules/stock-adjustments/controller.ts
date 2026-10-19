@@ -1,3 +1,4 @@
+
 import type { Request, Response } from "express";
 import { Prisma } from "@prisma/client";
 
@@ -36,7 +37,8 @@ function handleError(error: unknown, res: Response) {
 
     if (error.code === "P2034") {
       return res.status(409).json({
-        error: "This stock adjustment conflicted with another update. Please retry.",
+        error:
+          "This stock adjustment conflicted with another update. Please retry.",
       });
     }
   }
@@ -45,32 +47,16 @@ function handleError(error: unknown, res: Response) {
   return res.status(500).json({ error: "Internal server error" });
 }
 
-async function getDevelopmentUserId(res: Response) {
-  const userId = process.env.STOCKFLOW_DEV_USER_ID;
+export const createStockAdjustment = async (
+  req: Request,
+  res: Response,
+) => {
+  const userId = req.authUser?.id;
 
   if (!userId) {
-    res.status(503).json({
-      error: "Stock adjustment creation is not configured. Set STOCKFLOW_DEV_USER_ID in .env.",
-    });
-    return null;
+    return res.status(401).json({ error: "Authentication required." });
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { id: true },
-  });
-
-  if (!user) {
-    res.status(503).json({
-      error: "The configured development user does not exist. Check STOCKFLOW_DEV_USER_ID.",
-    });
-    return null;
-  }
-
-  return user.id;
-}
-
-export const createStockAdjustment = async (req: Request, res: Response) => {
   const parsed = createStockAdjustmentSchema.safeParse(req.body);
 
   if (!parsed.success) {
@@ -78,12 +64,6 @@ export const createStockAdjustment = async (req: Request, res: Response) => {
       error: "Invalid stock adjustment data",
       details: parsed.error.issues,
     });
-  }
-
-  const devUserId = await getDevelopmentUserId(res);
-
-  if (!devUserId) {
-    return;
   }
 
   const { productId, quantityChange, reason } = parsed.data;
@@ -146,7 +126,7 @@ export const createStockAdjustment = async (req: Request, res: Response) => {
         const movement = await tx.stockMovement.create({
           data: {
             productId,
-            createdById: devUserId,
+            createdById: userId,
             purchaseOrderId: null,
             type: "ADJUSTMENT",
             quantityChange,
@@ -173,7 +153,9 @@ export const createStockAdjustment = async (req: Request, res: Response) => {
     }
 
     if (result.kind === "inactive") {
-      return res.status(409).json({ error: "Cannot adjust an inactive product" });
+      return res.status(409).json({
+        error: "Cannot adjust an inactive product",
+      });
     }
 
     if (result.kind === "negative") {
@@ -191,7 +173,8 @@ export const createStockAdjustment = async (req: Request, res: Response) => {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2025") {
         return res.status(409).json({
-          error: "Stock adjustment could not be completed due to a concurrent update",
+          error:
+            "Stock adjustment could not be completed due to a concurrent update",
         });
       }
 
@@ -206,7 +189,10 @@ export const createStockAdjustment = async (req: Request, res: Response) => {
   }
 };
 
-export const listStockAdjustments = async (req: Request, res: Response) => {
+export const listStockAdjustments = async (
+  req: Request,
+  res: Response,
+) => {
   const parsed = listStockAdjustmentsQuerySchema.safeParse(req.query);
 
   if (!parsed.success) {
@@ -249,7 +235,10 @@ export const listStockAdjustments = async (req: Request, res: Response) => {
   }
 };
 
-export const getStockAdjustmentById = async (req: Request, res: Response) => {
+export const getStockAdjustmentById = async (
+  req: Request,
+  res: Response,
+) => {
   const parsed = stockAdjustmentIdSchema.safeParse(req.params.id);
 
   if (!parsed.success) {

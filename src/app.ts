@@ -1,5 +1,8 @@
+
 import express from "express";
 
+import { requireAuth } from "./middleware/auth.js";
+import { authRouter } from "./modules/auth/routes.js";
 import { productsRouter } from "./modules/products/routes.js";
 import { purchaseOrdersRouter } from "./modules/purchase-orders/routes.js";
 import { stockAdjustmentsRouter } from "./modules/stock-adjustments/routes.js";
@@ -24,8 +27,12 @@ app.get("/api/health", (_req, res) => {
   });
 });
 
-app.use("/api/products", productsRouter);
-app.use("/api/suppliers", suppliersRouter);
-app.use("/api/purchase-orders", purchaseOrdersRouter);
-app.use("/api/stock-adjustments", stockAdjustmentsRouter);
-app.use("/api/stock-movements", stockMovementsRouter);
+// Authentication endpoints remain public.
+app.use("/api/auth", authRouter);
+
+// All inventory endpoints require authentication.
+app.use("/api/products", requireAuth, productsRouter);
+app.use("/api/suppliers", requireAuth, suppliersRouter);
+app.use("/api/purchase-orders", requireAuth, purchaseOrdersRouter);
+app.use("/api/stock-adjustments", requireAuth, stockAdjustmentsRouter);
+app.use("/api/stock-movements", requireAuth, stockMovementsRouter);

@@ -63,32 +63,32 @@ function handleError(error: unknown, res: Response) {
   return res.status(500).json({ error: "Internal server error" });
 }
 
-async function getDevelopmentUserId(res: Response) {
-  const userId = process.env.STOCKFLOW_DEV_USER_ID;
+// async function getDevelopmentUserId(res: Response) {
+//   const userId = process.env.STOCKFLOW_DEV_USER_ID;
 
-  if (!userId) {
-    res.status(503).json({
-      error:
-        "Purchase order creation is not configured. Set STOCKFLOW_DEV_USER_ID in .env.",
-    });
-    return null;
-  }
+//   if (!userId) {
+//     res.status(503).json({
+//       error:
+//         "Purchase order creation is not configured. Set STOCKFLOW_DEV_USER_ID in .env.",
+//     });
+//     return null;
+//   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { id: true },
-  });
+//   const user = await prisma.user.findUnique({
+//     where: { id: userId },
+//     select: { id: true },
+//   });
 
-  if (!user) {
-    res.status(503).json({
-      error:
-        "The configured development user does not exist. Check STOCKFLOW_DEV_USER_ID.",
-    });
-    return null;
-  }
+//   if (!user) {
+//     res.status(503).json({
+//       error:
+//         "The configured development user does not exist. Check STOCKFLOW_DEV_USER_ID.",
+//     });
+//     return null;
+//   }
 
-  return user.id;
-}
+//   return user.id;
+// }
 
 async function validateActiveSupplier(supplierId: string) {
   return prisma.supplier.findFirst({
@@ -304,7 +304,7 @@ export const receivePurchaseOrder = async (
           await tx.stockMovement.create({
             data: {
               productId: orderItem.productId,
-              createdById: order.createdById,
+              createdById: req.authUser?.id ?? null,
               purchaseOrderId: order.id,
               type: "PURCHASE",
               quantityChange: receivedQuantity,
@@ -400,11 +400,14 @@ export const createPurchaseOrder = async (
   }
 
   try {
-    const createdById = await getDevelopmentUserId(res);
+      
+        const createdById = req.authUser?.id;
 
-    if (!createdById) {
-      return;
-    }
+        if (!createdById) {
+        return res.status(401).json({
+            error: "Authentication required.",
+        });
+        }
 
     const supplier = await validateActiveSupplier(parsed.data.supplierId);
 
