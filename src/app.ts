@@ -3,6 +3,7 @@ import express from "express";
 import { productsRouter } from "./modules/products/routes.js";
 import { purchaseOrdersRouter } from "./modules/purchase-orders/routes.js";
 import { stockAdjustmentsRouter } from "./modules/stock-adjustments/routes.js";
+import { stockMovementsRouter } from "./modules/stock-movements/routes.js";
 import { suppliersRouter } from "./modules/suppliers/routes.js";
 
 export const app = express();
@@ -27,3 +28,4 @@ app.use("/api/products", productsRouter);
 app.use("/api/suppliers", suppliersRouter);
 app.use("/api/purchase-orders", purchaseOrdersRouter);
 app.use("/api/stock-adjustments", stockAdjustmentsRouter);
+app.use("/api/stock-movements", stockMovementsRouter);
