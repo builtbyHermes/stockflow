@@ -4,3 +4,6 @@ dist/
 .env.*
 !.env.example
 /src/generated/prisma
+
+# curl cookie jar files used during local testing
+*.txt
