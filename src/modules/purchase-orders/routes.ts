@@ -1,6 +1,7 @@
 
 import { Router } from "express";
 
+import { requireRole } from "../../middleware/auth.js";
 import {
   cancelPurchaseOrder,
   createPurchaseOrder,
@@ -19,5 +20,5 @@ purchaseOrdersRouter.post("/", createPurchaseOrder);
 
 purchaseOrdersRouter.patch("/:id/order", markPurchaseOrderAsOrdered);
 purchaseOrdersRouter.post("/:id/receive", receivePurchaseOrder);
-purchaseOrdersRouter.patch("/:id/cancel", cancelPurchaseOrder);
+purchaseOrdersRouter.patch("/:id/cancel", requireRole("ADMIN"), cancelPurchaseOrder);
 purchaseOrdersRouter.patch("/:id", updatePurchaseOrder);

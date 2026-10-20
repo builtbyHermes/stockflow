@@ -26,7 +26,13 @@ function getCookie(req: Request, name: string): string | undefined {
     const key = part.slice(0, separatorIndex).trim();
     const value = part.slice(separatorIndex + 1).trim();
 
-    if (key === name) return decodeURIComponent(value);
+    if (key !== name) continue;
+
+    try {
+      return decodeURIComponent(value);
+    } catch {
+      return undefined;
+    }
   }
 
   return undefined;

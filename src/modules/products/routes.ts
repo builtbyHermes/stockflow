@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import { requireRole } from "../../middleware/auth.js";
 import {
   createProduct,
   deleteProduct,
@@ -14,4 +15,4 @@ productsRouter.get("/", listProducts);
 productsRouter.get("/:id", getProductById);
 productsRouter.post("/", createProduct);
 productsRouter.patch("/:id", updateProduct);
-productsRouter.delete("/:id", deleteProduct);
+productsRouter.delete("/:id", requireRole("ADMIN"), deleteProduct);
