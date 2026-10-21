@@ -10,13 +10,15 @@ export function AppGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, ready } = useAuth();
+  const publicPaths = ["/", "/login", "/register"];
+  const isPublicPath = publicPaths.includes(pathname);
 
   useEffect(() => {
     if (!ready) {
       return;
     }
 
-    if (!user && pathname !== "/login") {
+    if (!user && !isPublicPath) {
       router.replace("/login");
       return;
     }
@@ -24,13 +26,13 @@ export function AppGate({ children }: { children: React.ReactNode }) {
     if (user && pathname === "/login") {
       router.replace("/dashboard");
     }
-  }, [ready, user, pathname, router]);
+  }, [ready, user, pathname, isPublicPath, router]);
 
   if (!ready) {
     return <div className="loading-shell">Checking session...</div>;
   }
 
-  if (pathname === "/login") {
+  if (isPublicPath) {
     return <>{children}</>;
   }
 
