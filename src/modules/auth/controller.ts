@@ -4,7 +4,7 @@ import type { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 
 import { prisma } from "../../lib/prisma.js";
-import { loginSchema } from "./schema.js";
+import { loginSchema, registerSchema } from "./schema.js";
 
 const SESSION_COOKIE = "stockflow_session";
 const SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
@@ -181,4 +181,71 @@ export async function logout(req: Request, res: Response) {
   clearSessionCookie(res);
 
   return res.status(200).json({ message: "Logout successful." });
+}
+
+
+export async function register(req: Request, res: Response) {
+  const parsed = registerSchema.safeParse(req.body);
+
+  if (!parsed.success) {
+    return res.status(400).json({
+      error: "Invalid registration details.",
+      details: parsed.error.issues.map((issue) => ({
+        field: issue.path.join("."),
+        message: issue.message,
+      })),
+    });
+  }
+
+  const { name, email, password } = parsed.data;
+
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true },
+    });
+
+    if (existingUser) {
+      return res.status(409).json({
+        error: "An account with this email already exists.",
+      });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 12);
+
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        passwordHash,
+        role: "STAFF",
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+      },
+    });
+
+    return res.status(201).json({
+      message: "Account created successfully.",
+      user,
+    });
+  } catch (error: unknown) {
+    // Handle a duplicate email even if two requests race.
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      error.code === "P2002"
+    ) {
+      return res.status(409).json({
+        error: "An account with this email already exists.",
+      });
+    }
+
+    throw error;
+  }
 }

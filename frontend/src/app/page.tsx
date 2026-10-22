@@ -67,7 +67,7 @@ export default function Home() {
 
           <div className={styles.navActions}>
             <Link href="/login">Login</Link>
-            <Link href="/dashboard" className={styles.primaryButton}>
+            <Link href="/register" className={styles.primaryButton}>
               Get Started For Free
             </Link>
           </div>
@@ -91,7 +91,7 @@ export default function Home() {
             management, and shipping that keeps your business moving.
           </p>
 
-          <Link href="/dashboard" className={styles.primaryButtonLarge}>
+          <Link href="/register" className={styles.primaryButtonLarge}>
             Get Started For Free
           </Link>
         </div>
@@ -282,7 +282,7 @@ export default function Home() {
         <div className={styles.ctaCopy}>
           <span className={styles.kicker}>Ready to take control?</span>
           <h3>Ready to take control of your inventory and shipping?</h3>
-          <Link href="/login" className={styles.primaryButtonLarge}>
+          <Link href="/register" className={styles.primaryButtonLarge}>
             Get Started For Free
           </Link>
         </div>

@@ -59,7 +59,7 @@
   width: 1720px;
   height: 200px;
   left: 50%;
-  top: 285px;
+  top: 585px;
   transform: translateX(-50%) rotate(-17deg);
   background: linear-gradient(
     90deg,
@@ -83,6 +83,7 @@
   justify-content: space-between;
   height: 92px;
   padding: 0 8px;
+  color: #a8a8a8;
 }
 
 .brand,
@@ -159,7 +160,7 @@
   align-items: center;
   justify-content: center;
   background: var(--dark);
-  color: white;
+  color: rgb(128, 128, 128);
   border-radius: 8px;
   text-decoration: none;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -170,6 +171,7 @@
   padding: 0 20px;
   font-size: 13px;
   font-weight: 500;
+  color: #ecf6ef;
 }
 
 .primaryButtonLarge {
@@ -231,7 +233,7 @@
 }
 
 .heroContent h1 strong {
-  color: var(--green);
+  color: #54A67D;
   font-weight: 500;
 }
 
@@ -254,6 +256,18 @@
   box-shadow: var(--shadow);
   display: flex;
   overflow: hidden;
+}
+
+.navActions .primaryButton {
+  height: 42px;
+  padding: 0 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #ffffff; /* Explicitly set to white */
+}
+
+.navActions a.primaryButton {
+  color: #ecf6ef;
 }
 
 .sidebarPanel {
