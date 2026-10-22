@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import styles from "./page.module.css";
 
-const partners = ["Fastship", "Overview", "Logictech", "Dropbox"];
+const partners = ["Stoki", "Overview", "Logictech", "Dropbox"];
 
 const featureCards = [
   {
@@ -22,7 +22,7 @@ const featureCards = [
 const testimonials = [
   {
     quote:
-      "Fastship has completely changed how we manage stock and shipments across multiple warehouses.",
+      "Stoki has completely changed how we manage stock and shipments across multiple warehouses.",
     author: "Camila Robertson",
     role: "Operations Lead",
   },
@@ -56,7 +56,7 @@ export default function Home() {
               <span className={styles.tileC} />
               <span className={styles.tileD} />
             </div>
-            <span className={styles.brandText}>Fastship</span>
+            <span className={styles.brandText}>Stoki</span>
           </div>
 
           <nav className={styles.nav} aria-label="Main navigation">
@@ -82,7 +82,7 @@ export default function Home() {
           <h1>
             Streamline your shipping
             <span>
-              with <strong>Fastship</strong> solutions.
+              with <strong>Stoki</strong> solutions.
             </span>
           </h1>
 
@@ -105,7 +105,7 @@ export default function Home() {
                 <span className={styles.tileC} />
                 <span className={styles.tileD} />
               </div>
-              <span className={styles.brandText}>Fastship</span>
+              <span className={styles.brandText}>Stoki</span>
             </div>
 
             <div className={styles.sideGroup}>
@@ -305,7 +305,7 @@ export default function Home() {
             <span className={styles.tileC} />
             <span className={styles.tileD} />
           </div>
-          <span className={styles.brandText}>Fastship</span>
+          <span className={styles.brandText}>Stoki</span>
         </div>
 
         <div className={styles.footerColumns}>
